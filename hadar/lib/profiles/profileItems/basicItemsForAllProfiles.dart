@@ -179,6 +179,13 @@ class ManagePersonalInfo extends StatelessWidget {
             //  TODO: change password
           },
         ),
+        TextButton(
+          child: buttonCreate.getChild('בחירת קטיגוריות', Icons.lock),
+          style: style,
+          onPressed: () {
+            //  TODO: change password
+          },
+        ),
       ],
     );
     // return Column(
