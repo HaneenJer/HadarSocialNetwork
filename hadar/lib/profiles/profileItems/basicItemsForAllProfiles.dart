@@ -4,8 +4,10 @@ import 'package:hadar/Design/basicTools.dart';
 import 'package:hadar/services/DataBaseServices.dart';
 import 'package:hadar/users/User.dart' as a;
 import 'package:hadar/utils/HelpRequestType.dart';
+import 'ChangeLangDialogue.dart';
 import 'basicItemsForAdminProfile.dart';
 import 'basicItemsForUserProfile.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 //when a user clicks on the category, he gets a description box,
 // where he can describe his request
@@ -77,8 +79,24 @@ class MainInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        TextButton(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(AppLocalizations.of(context).language),
+              Icon(Icons.language),
+            ],
+          ),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => ChangeLangDialogue(),
+            );
+          }
+        ),
         SizedBox(
-          height: 120,
+          height: 60,
         ),
         Text(
           user.name,
@@ -91,14 +109,14 @@ class MainInfo extends StatelessWidget {
         SizedBox(
           height: 10,
         ),
-        Text(
+        /*Text(
           privilege,
           style: TextStyle(
               fontSize: 18.0,
               color: Colors.black45,
               letterSpacing: 2.0,
               fontWeight: FontWeight.w300),
-        ),
+        ),*/
       ],
     );
   }
@@ -116,7 +134,7 @@ class AboutMe extends StatelessWidget {
     return Column(
       children: [
         Text(
-          user.phoneNumber + '  :' + 'מספר טלפון',
+          AppLocalizations.of(context).telNumberTwoDots + user.phoneNumber,
           style: TextStyle(
               fontSize: 15.0,
               color: Colors.blueGrey,
@@ -127,7 +145,7 @@ class AboutMe extends StatelessWidget {
           height: 10,
         ),
         Text(
-          user.email + '  :' + 'אימייל',
+          AppLocalizations.of(context).emailTwoDots + user.email,
           style: TextStyle(
               fontSize: 15.0,
               color: Colors.blueGrey,
@@ -159,21 +177,21 @@ class ManagePersonalInfo extends StatelessWidget {
     return Column(
       children: [
         TextButton(
-          child: buttonCreate.getChild('התראות', Icons.notifications_rounded),
+          child: buttonCreate.getChild(AppLocalizations.of(context).notification, Icons.notifications_rounded),
           style: style,
           onPressed: () {
             //  TODO: turn notifications ON/OFF
           },
         ),
         TextButton(
-          child: buttonCreate.getChild('שנה מיקום קבוע', Icons.location_on),
+          child: buttonCreate.getChild(AppLocalizations.of(context).changeStableLocation, Icons.location_on),
           style: style,
           onPressed: () {
             //  TODO: change location
           },
         ),
         TextButton(
-          child: buttonCreate.getChild('שנה סיסמא', Icons.lock),
+          child: buttonCreate.getChild(AppLocalizations.of(context).changePassword, Icons.lock),
           style: style,
           onPressed: () {
             //  TODO: change password
@@ -220,10 +238,10 @@ class SignOut extends StatelessWidget {
     return TextButton(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          const Text(
-            'יציאה',
+          Text(
+            AppLocalizations.of(context).signOut,
             style: TextStyle(
                 fontSize: 17.0,
                 decoration: TextDecoration.underline,
@@ -233,7 +251,9 @@ class SignOut extends StatelessWidget {
         ],
       ),
       style: TextButton.styleFrom(
-        primary: Theme.of(context).primaryColor,
+        primary: Theme
+            .of(context)
+            .primaryColor,
         padding: EdgeInsets.only(left: 10.0),
       ),
       onPressed: () {
@@ -262,52 +282,52 @@ class BasicLists {
   List<Item> listForUserAdminView;
   List<Item> listForAdminView;
 
-  BasicLists(a.User user, Widget parent) {
+  BasicLists(a.User user, Widget parent, BuildContext context) {
     this.user = user;
     this.parent = parent;
     listForAdminView = [
       Item(
-        name: 'מידע עלי',
+        name: AppLocalizations.of(context).infoAboutMe,
         builder: AboutMe(user),
       ),
       Item(
-        name: 'נהל פרטים אישיים',
+        name: AppLocalizations.of(context).managePersonalInfo,
         builder: ManagePersonalInfo(user),
       ),
       Item(
-        name: 'נהל את המערכת',
+        name: AppLocalizations.of(context).manageSystem,
         builder: ManageTheSystem(),
       ),
       Item(
-        name: 'אחר',
+        name: AppLocalizations.of(context).other,
         builder: OtherUserAccess(user),
       ),
     ];
     listForUserView = [
       Item(
-        name: 'מידע עלי',
+        name: AppLocalizations.of(context).infoAboutMe,
         builder: AboutMe(user),
       ),
       Item(
-        name: 'נהל פרטים אישיים',
+        name: AppLocalizations.of(context).managePersonalInfo,
         builder: ManagePersonalInfo(user),
       ),
       Item(
-        name: 'צור קשר',
+        name: AppLocalizations.of(context).contact,
         builder: ContactUs(user, parent),
       ),
       Item(
-        name: 'אחר',
+        name: AppLocalizations.of(context).other,
         builder: OtherUserAccess(user),
       ),
     ];
     listForUserAdminView = [
       Item(
-        name: 'מידע על המשתמש',
+        name: AppLocalizations.of(context).userInfo,
         builder: AboutMe(user),
       ),
       Item(
-        name: 'אחר',
+        name: AppLocalizations.of(context).other,
         builder: OtherAdminAccess(user),
       ),
     ];
@@ -326,9 +346,9 @@ class RemoveUser extends StatelessWidget {
     return new AlertDialog(
       backgroundColor: BasicColor.backgroundClr,
       title: Center(
-          child: const Text(
-        'האם אתה בטוח? ',
-        textDirection: TextDirection.rtl,
+        child: Text(
+          AppLocalizations.of(context).areYouSure,
+          textDirection: TextDirection.rtl,
       )),
       actions: <Widget>[
         Row(
@@ -336,24 +356,28 @@ class RemoveUser extends StatelessWidget {
           children: [
             TextButton(
               style: TextButton.styleFrom(
-                primary: Theme.of(context).primaryColor,
+                primary: Theme
+                    .of(context)
+                    .primaryColor,
               ),
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              child: const Text('ביטול'),
+              child: Text(AppLocalizations.of(context).cancel),
             ),
             Spacer(flex: 1,),
             TextButton(
               style: TextButton.styleFrom(
-                primary: Theme.of(context).primaryColor,
+                primary: Theme
+                    .of(context)
+                    .primaryColor,
               ),
               onPressed: () async {
                 await DataBaseService().RemoveCurrentuserFromAuthentication();
                 DataBaseService().RemoveUserfromdatabase(user);
                 DataBaseService().Sign_out(context);
               },
-              child: const Text('אישור'),
+              child: Text(AppLocalizations.of(context).approve),
             ),
           ],
         ),
@@ -399,7 +423,7 @@ class _SortByCatForAllState extends State<SortByCatForAll> {
           child: ListTile(
             title: Text(
               item.name,
-              textDirection: TextDirection.rtl,
+              //textDirection: TextDirection.rtl,
             ),
           ),
         );
@@ -428,17 +452,19 @@ class ProfileButton {
   Widget getChild(String title, IconData icon) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text(title),
         Icon(icon),
+        Text(title),
       ],
     );
   }
 
   ButtonStyle getStyle(BuildContext context) {
     return TextButton.styleFrom(
-      primary: Theme.of(context).primaryColor,
+      primary: Theme
+          .of(context)
+          .primaryColor,
       padding: EdgeInsets.only(right: 25.0),
     );
   }

@@ -9,18 +9,28 @@ import 'package:hadar/users/Organization.dart';
 
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OrganizationsInfoList extends StatelessWidget {
+
+  final BuildContext currContext;
+
+  OrganizationsInfoList(this.currContext);
+
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Organization>>.value(
       value: DataBaseService().getAllOrganizations(),
-      child: _OrganizationFeed(),
+      child: _OrganizationFeed(currContext),
     );
   }
 }
 
 class _OrganizationFeed extends StatelessWidget {
+  final BuildContext currContext;
+
+  _OrganizationFeed(this.currContext);
+
   @override
   Widget build(BuildContext context) {
     final List<Organization> organizations =
@@ -30,7 +40,7 @@ class _OrganizationFeed extends StatelessWidget {
 
     if (organizations != null) {
       organizationsTiles = organizations.map((Organization organization) {
-        return _OrganizationInfo(organization);
+        return _OrganizationInfo(organization, currContext);
       }).toList();
     }
 
@@ -50,8 +60,9 @@ class _OrganizationFeed extends StatelessWidget {
 
 class _OrganizationInfo extends StatelessWidget {
   final Organization organization;
+  final BuildContext currContext;
 
-  _OrganizationInfo(this.organization);
+  _OrganizationInfo(this.organization, this.currContext);
 
   _launchCaller(String number) async {
     var url = "tel:" + number;
@@ -82,7 +93,7 @@ class _OrganizationInfo extends StatelessWidget {
             TableRow(
               children: <Widget>[
                 Text(
-                  'מספר טלפון :',
+                  AppLocalizations.of(currContext).telNumberTwoDots,
                   style: TextStyle(
                       fontSize: 15.0,
                       color: Colors.blueGrey,
@@ -119,7 +130,7 @@ class _OrganizationInfo extends StatelessWidget {
             TableRow(
               children: <Widget>[
                 Text(
-                  'אימייל :',
+                  AppLocalizations.of(currContext).emailTwoDots,
                   style: TextStyle(
                       fontSize: 15.0,
                       color: Colors.blueGrey,
@@ -141,7 +152,7 @@ class _OrganizationInfo extends StatelessWidget {
             TableRow(
               children: <Widget>[
                 Text(
-                  'מיקום :',
+                  AppLocalizations.of(currContext).locationTwoDots,
                   style: TextStyle(
                       fontSize: 15.0,
                       color: Colors.blueGrey,
@@ -162,7 +173,7 @@ class _OrganizationInfo extends StatelessWidget {
             TableRow(
               children: <Widget>[
                 Text(
-                  'שירותים :',
+                  AppLocalizations.of(currContext).services,
                   style: TextStyle(
                       fontSize: 15.0,
                       color: Colors.blueGrey,

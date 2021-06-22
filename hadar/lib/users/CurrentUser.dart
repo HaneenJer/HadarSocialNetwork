@@ -1,5 +1,6 @@
 
 
+
 import 'package:hadar/feeds/Admin_JoinRequest_Feed.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hadar/feeds/feed_items/category_scrol.dart';
@@ -20,6 +21,7 @@ import 'package:hadar/utils/HelpRequestType.dart';
 import 'package:hadar/utils/VerificationRequest.dart';
 import 'package:provider/provider.dart';
 
+import '../main.dart';
 import 'Privilege.dart';
 import 'User.dart';
 
@@ -31,30 +33,36 @@ class CurrentUser{
     return curr_user;
   }
 
-  static Future<Widget> init_user() async{
+  static Future<Widget> init_user(BuildContext context) async{
     curr_user = await DataBaseService().getCurrentUser();
 
     if(curr_user == null){
       return null;
     }
-    switch(curr_user.privilege){
 
+    switch(curr_user.privilege){
       case Privilege.Admin:
         initWorkmanager();
         return AdminPage(curr_user as Admin);
         break;
+
       case Privilege.UserInNeed:
         return UserInNeedPage(curr_user as UserInNeed);
         break;
+
       case Privilege.Volunteer:
         initWorkmanager();
-        List<HelpRequestType> categories = await DataBaseService().helpRequestTypesAsList();
-        List<MyListView> categories_list_items = List();
-        for(var i = 0; i < categories.length; i++){
-          categories_list_items.add(MyListView(categories[i].description));
+        List<HelpRequestType> db_categories = await DataBaseService().helpRequestTypesAsList();
+        List<HelpRequestType> user_categories = (curr_user as Volunteer).categories;
+
+        if(user_categories.isEmpty) {
+          for (var i = 0; i < db_categories.length; i++) {
+            (curr_user as Volunteer).categoriesAsList.add(MyListView(db_categories[i].description));
+          }
         }
-        categories_list_items.add(MyListView('אחר'));
-        return VolunteerPage(curr_user as Volunteer , categories_list_items);
+
+        (curr_user as Volunteer).categoriesAsList.add(MyListView('אחר'));
+        return VolunteerPage(curr_user as Volunteer , (curr_user as Volunteer).categoriesAsList);
         break;
 
 
